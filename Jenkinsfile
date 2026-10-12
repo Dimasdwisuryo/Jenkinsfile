@@ -1,14 +1,24 @@
 pipeline {
   agent any
   environment {
-    IMAGE_NAME = 'dimasdwiaja/simple-app'
+    IMAGE_NAME = 'username-docker-anda/simple-app'
     REGISTRY_CREDENTIALS = 'dockerhub-credentials'
   }
   stages {
-    stage('Checkout') { steps { checkout scm } }
-    stage('Build') { steps { bat 'echo "Build di Windows"' } }
+    stage('Checkout') { 
+      steps { 
+        checkout scm 
+      } 
+    }
+    stage('Build') {
+      steps {
+        bat 'echo "Mulai build aplikasi"'
+      }
+    }
     stage('Build Docker Image') {
-      steps { bat "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% ." }
+      steps { 
+        bat "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% ." 
+      }
     }
     stage('Push Docker Image') {
       steps {
@@ -20,6 +30,14 @@ pipeline {
           bat "docker push %IMAGE_NAME%:latest"
         }
       }
+    }
+  }
+  post {
+    always {
+      echo 'Selesai menjalankan pipeline!'
+    }
+    success {
+      echo 'Pipeline berhasil dikerjakan!'
     }
   }
 }
